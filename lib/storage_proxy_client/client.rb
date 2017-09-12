@@ -3,29 +3,45 @@ require 'storage_proxy_client/response'
 
 module StorageProxyClient
   class Client
-    attr_accessor :conn, :config
+    attr_accessor :conn, :config, :external_uri, :service
 
-    def initialize
+    def initialize(external_uri:, service:)
+      @external_uri = external_uri
+      @service = service
       @conn = Faraday.new
       @config = {
-        url: 'http://localhost'
+        api_root: 'http://localhost'
       }
     end
 
-    def status(external_uri)
-      response = conn.get do |req|
-        req.headers.merge! default_headers
-        req.url "#{config[:url]}/status/#{URI.escape(external_uri)}"
-      end
+    def status
+      response = conn.get(build_request_uri(:status), nil, build_request_headers)
+      StorageProxyClient::Response.new(faraday_response: response)
+    end
 
+    def stage
+      response = conn.get(build_request_uri(:stage), nil, build_request_headers)
       StorageProxyClient::Response.new(faraday_response: response)
     end
 
 
     private
 
-      def default_headers
-        {}
+      def build_request_headers(include_events: nil)
+        {}.tap do |headers|
+          headers[:service] = service
+          headers[:events] = '1' if include_events
+        end
+      end
+
+      def build_request_uri(endpoint)
+        escaped_external_uri = CGI.escape external_uri
+        case endpoint
+        when :stage
+          "#{config[:api_root]}/stage/#{escaped_external_uri}"
+        when :status
+          "#{config[:api_root]}/status/#{escaped_external_uri}"
+        end
       end
   end
 end
