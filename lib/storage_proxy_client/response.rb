@@ -12,6 +12,10 @@ module StorageProxyClient
       parsed_body['staged'] == '1'
     end
 
+    def staged_location
+      parsed_body['staged_location']
+    end
+
     private
 
       def parsed_body

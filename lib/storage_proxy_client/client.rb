@@ -22,7 +22,7 @@ module StorageProxyClient
     end
 
 
-    private 
+    private
 
       def default_headers
         {}
