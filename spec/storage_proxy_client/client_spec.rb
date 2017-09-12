@@ -31,7 +31,7 @@ describe StorageProxyClient::Client do
 
 
       it 'returns a 200' do
-        
+        expect(subject.status(example_url).http_status).to eq 200
       end
     end
 
