@@ -1,5 +1,9 @@
 require "bundler/setup"
 require "storage_proxy_client"
+require 'webmock/rspec'
+WebMock.disable_net_connect!
+
+require 'pry'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
