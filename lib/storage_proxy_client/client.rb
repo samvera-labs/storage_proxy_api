@@ -38,9 +38,9 @@ module StorageProxyClient
         escaped_external_uri = CGI.escape external_uri
         case endpoint
         when :stage
-          "#{config[:api_root]}/stage/#{escaped_external_uri}"
+          "#{config[:api_root]}/stage?external_uri=#{escaped_external_uri}"
         when :status
-          "#{config[:api_root]}/status/#{escaped_external_uri}"
+          "#{config[:api_root]}/status?external_uri=#{escaped_external_uri}"
         end
       end
   end

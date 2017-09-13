@@ -9,7 +9,7 @@ describe StorageProxyClient::Client do
   subject { described_class.new(external_uri: external_uri, service: fake_service) }
 
   before do
-    stub_request(:get, "http://localhost/status/#{CGI.escape(external_uri)}").
+    stub_request(:get, "http://localhost/status?external_uri=#{CGI.escape(external_uri)}").
       to_return(status: expected_resp_status, body: expected_resp_body, headers: expected_resp_headers)
   end
 
