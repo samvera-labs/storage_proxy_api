@@ -10,7 +10,7 @@ module StorageProxyClient
       @service = service
       @conn = Faraday.new
       @config = {
-        api_root: 'http://localhost'
+        api_root: 'http://localhost:9091'
       }
     end
 
@@ -20,7 +20,7 @@ module StorageProxyClient
     end
 
     def stage
-      response = conn.get(build_request_uri(:stage), nil, build_request_headers)
+      response = conn.post(build_request_uri(:stage), nil, build_request_headers)
       StorageProxyClient::Response.new(faraday_response: response)
     end
 

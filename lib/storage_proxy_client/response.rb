@@ -1,4 +1,5 @@
 require 'storage_proxy_client'
+require 'json'
 
 module StorageProxyClient
   class Response
