@@ -43,6 +43,36 @@ describe StorageProxyClient::Response do
     end
   end
 
+  describe 'staging?' do
+    context 'when the response reports that the file is staging' do
+      let(:mock_response_body) do
+        {
+          external_uri: mock_external_uri,
+          service: mock_vendor_service,
+          staging: '1'
+        }
+      end
+
+      it 'returns true' do
+        expect(subject).to be_staging
+      end
+    end
+
+    context 'when the response reports that the file is not staging' do
+      let(:mock_response_body) do
+        {
+          external_uri: mock_external_uri,
+          service: mock_vendor_service,
+          staging: '0'
+        }
+      end
+
+      it 'returns false' do
+        expect(subject).to_not be_staging
+      end
+    end
+  end
+
   describe 'staged_location' do
     context 'when the response reports that the file is staged' do
       let(:mock_response_body) do
