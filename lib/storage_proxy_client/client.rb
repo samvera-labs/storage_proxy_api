@@ -20,6 +20,7 @@ module StorageProxyClient
     end
 
     def stage
+
       response = conn.post(build_request_uri(:stage), nil, build_request_headers)
       StorageProxyClient::Response.new(faraday_response: response)
     end
