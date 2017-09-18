@@ -54,7 +54,7 @@ describe StorageProxyAPI::Client do
 
 
   describe '#status' do
-    let(:headers) { { service: 'fake service', include_events: 'true' } }
+    let(:headers) { { service: 'fake service', include_events: '1' } }
     let(:params) { { external_uri: 'fake_uri' } }
 
     before do
