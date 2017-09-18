@@ -1,8 +1,8 @@
 require 'faraday'
-require 'storage_proxy_client/response'
+require 'storage_proxy_api/response'
 
 
-module StorageProxyClient
+module StorageProxyAPI
   class Client
     attr_reader :base_url
 
@@ -23,7 +23,7 @@ module StorageProxyClient
         faraday_request.body = body if body
       end
 
-      StorageProxyClient::Response.new(
+      StorageProxyAPI::Response.new(
         status: faraday_response.status,
         body: faraday_response.body,
         headers: faraday_response.headers

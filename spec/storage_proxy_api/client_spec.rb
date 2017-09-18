@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'storage_proxy_client/client'
+require 'storage_proxy_api/client'
 
-describe StorageProxyClient::Client do
+describe StorageProxyAPI::Client do
 
   subject { described_class.new(base_url: 'http://mock-storage-proxy-host.org:1234') }
   let(:example_service) { "Example Service" }
@@ -38,7 +38,7 @@ describe StorageProxyClient::Client do
 
         it 'passes them along to the request' do
           expect(subject.conn).to receive(:get).and_call_original
-          expect(StorageProxyClient::Response).to receive(:new).with(status: 200, headers: response_headers, body: response_body)
+          expect(StorageProxyAPI::Response).to receive(:new).with(status: 200, headers: response_headers, body: response_body)
           subject.send_request(http_method: :get, action: action, headers: request_headers, params: request_params, body: request_body)
         end
       end

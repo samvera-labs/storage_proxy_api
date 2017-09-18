@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'storage_proxy_client/version'
+require 'storage_proxy_api/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "storage_proxy_client"
-  spec.version       = StorageProxyClient::VERSION
+  spec.name          = "storage_proxy_api"
+  spec.version       = StorageProxyAPI::VERSION
   spec.authors       = ["Andrew Myers"]
   spec.email         = ["afredmyers@gmail.com"]
 

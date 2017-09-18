@@ -1,7 +1,7 @@
-require 'storage_proxy_client'
+require 'storage_proxy_api'
 require 'json'
 
-module StorageProxyClient
+module StorageProxyAPI
   class Response
     attr_accessor :status, :body, :headers
 

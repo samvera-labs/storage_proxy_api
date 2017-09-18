@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "storage_proxy_client"
+require "storage_proxy_api"
 require 'webmock/rspec'
 WebMock.disable_net_connect!
 

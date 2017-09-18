@@ -1,12 +1,10 @@
 require 'spec_helper'
 
-describe StorageProxyClient::Response do
+describe StorageProxyAPI::Response do
+  let(:mock_external_uri) { 'http://some_service.org' }
+  let(:mock_vendor_service) { 'fake vendor' }
 
-  let(:body) { { foo: "bar"}.to_json }
-
-  context 'when the body is a JSON string'
-
-  subject { described_class.new(body: body) }
+  subject { described_class.new(body: mock_response_body.to_json) }
 
   describe 'staged?' do
     context 'when the response reports that the file is staged' do
