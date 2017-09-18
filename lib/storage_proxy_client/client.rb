@@ -1,48 +1,41 @@
 require 'faraday'
 require 'storage_proxy_client/response'
 
+
 module StorageProxyClient
   class Client
-    attr_accessor :conn, :config, :external_uri, :service
+    attr_reader :base_url
 
-    def initialize(external_uri:, service:)
-      @external_uri = external_uri
-      @service = service
-      @conn = Faraday.new
-      @config = {
-        api_root: 'http://localhost:9091'
-      }
+    def initialize(base_url:)
+      @base_url = base_url
     end
 
-    def status
-      response = conn.get(build_request_uri(:status), nil, build_request_headers)
-      StorageProxyClient::Response.new(faraday_response: response)
+    def conn
+      @conn ||= Faraday.new(url: base_url)
     end
 
-    def stage
-
-      response = conn.post(build_request_uri(:stage), nil, build_request_headers)
-      StorageProxyClient::Response.new(faraday_response: response)
-    end
-
-
-    private
-
-      def build_request_headers(include_events: nil)
-        {}.tap do |headers|
-          headers[:service] = service
-          headers[:events] = '1' if include_events
-        end
+    # Sends an API request and returns the response.
+    def send_request(http_method:, action: '/', headers: nil, params: nil, body: nil)
+      faraday_response = conn.send(http_method) do |faraday_request|
+        faraday_request.url(action)
+        faraday_request.params = params if params
+        faraday_request.headers = headers if headers
+        faraday_request.body = body if body
       end
 
-      def build_request_uri(endpoint)
-        escaped_external_uri = CGI.escape external_uri
-        case endpoint
-        when :stage
-          "#{config[:api_root]}/stage?external_uri=#{escaped_external_uri}"
-        when :status
-          "#{config[:api_root]}/status?external_uri=#{escaped_external_uri}"
-        end
-      end
+      StorageProxyClient::Response.new(
+        status: faraday_response.status,
+        body: faraday_response.body,
+        headers: faraday_response.headers
+      )
+    end
+
+    def status(service:, external_uri:, include_events: false)
+      send_request(:get, action: 'status', headers: { service: service, include_events: include_events }, params: { external_uri: external_uri} )
+    end
+
+    def stage(service:, external_uri:)
+      send_request(:post, action: 'stage', headers: { service: service }, params: { external_uri: external_uri } )
+    end
   end
 end

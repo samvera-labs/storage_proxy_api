@@ -1,16 +1,12 @@
 require 'spec_helper'
-require 'storage_proxy_client/client'
 
 describe StorageProxyClient::Response do
 
-  let(:mock_faraday_response) do
-    Faraday::Response.new(body: mock_response_body.to_json)
-  end
+  let(:body) { { foo: "bar"}.to_json }
 
-  let(:mock_external_uri) { 'http://pretendvendor.org/123355' }
-  let(:mock_vendor_service) { 'Pretend Vendor' }
+  context 'when the body is a JSON string'
 
-  subject { described_class.new(faraday_response: mock_faraday_response) }
+  subject { described_class.new(body: body) }
 
   describe 'staged?' do
     context 'when the response reports that the file is staged' do

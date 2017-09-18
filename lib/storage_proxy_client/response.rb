@@ -3,14 +3,17 @@ require 'json'
 
 module StorageProxyClient
   class Response
-    attr_accessor :faraday_response, :parsed_body
+    attr_accessor :status, :body, :headers
 
-    def initialize(faraday_response: nil)
-      @faraday_response = faraday_response
+    def initialize(status: nil, body: nil, headers: nil)
+      @status = status
+      @headers = headers
+      # Assume the body is JSON.
+      @body = JSON.parse body unless body.empty?
     end
 
     def staged?
-      parsed_body['staged'] == '1'
+      body['staged'] == '1'
     end
 
     def staging?
@@ -19,13 +22,7 @@ module StorageProxyClient
     end
 
     def staged_location
-      parsed_body['staged_location']
+      body['staged_location']
     end
-
-    private
-
-      def parsed_body
-        @parsed_body ||= JSON.parse faraday_response.body
-      end
   end
 end
