@@ -31,11 +31,11 @@ module StorageProxyAPI
     end
 
     def status(service:, external_uri:, include_events: false)
-      send_request(:get, action: 'status', headers: { service: service, include_events: include_events }, params: { external_uri: external_uri} )
+      send_request(http_method: :get, action: 'status', headers: { service: service, include_events: include_events }, params: { external_uri: external_uri} )
     end
 
     def stage(service:, external_uri:)
-      send_request(:post, action: 'stage', headers: { service: service }, params: { external_uri: external_uri } )
+      send_request(http_method: :post, action: 'stage', headers: { service: service }, params: { external_uri: external_uri } )
     end
   end
 end

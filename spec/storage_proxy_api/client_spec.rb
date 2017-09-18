@@ -52,23 +52,34 @@ describe StorageProxyAPI::Client do
     end
   end
 
+
   describe '#status' do
-    let(:service) { "fake_service" }
-    let(:include_events) { true }
-    let(:external_uri) { "fake_uri" }
+    let(:headers) { { service: 'fake service', include_events: 'true' } }
+    let(:params) { { external_uri: 'fake_uri' } }
+
+    before do
+      stub_request(:get, "#{subject.base_url}/status").
+        with(headers: headers, query: params)
+    end
+
     it 'calls #send_request with http_method: :get, action: "status", passes :inclue_events and :service as headers, and :external_uri as a param' do
-      expect(subject).to receive(:send_request).with(:get, action: "status", headers: { service: service, include_events: include_events }, params: { external_uri: external_uri } )
-      subject.status(service: service, include_events: include_events, external_uri: external_uri)
+      expect(subject).to receive(:send_request).with(http_method: :get, action: "status", headers: headers, params: params ).and_call_original
+      subject.status(service: headers[:service], include_events: headers[:include_events], external_uri: params[:external_uri])
     end
   end
 
   describe '#stage' do
-    let(:service) { "fake_service" }
-    let(:include_events) { true }
-    let(:external_uri) { "fake_uri" }
+    let(:headers) { { service: 'fake service' } }
+    let(:params) { { external_uri: 'fake_uri' } }
+
+    before do
+      stub_request(:post, "#{subject.base_url}/stage").
+        with(headers: headers, query: params)
+    end
+
     it 'calls #send_request with http_method: :post, action: "stage", passes :inclue_events and :service as headers, and :external_uri as a param' do
-      expect(subject).to receive(:send_request).with(:post, action: "stage", headers: { service: service }, params: { external_uri: external_uri } )
-      subject.stage(service: service, external_uri: external_uri)
+      expect(subject).to receive(:send_request).with(http_method: :post, action: "stage", headers: headers, params: params ).and_call_original
+      subject.stage(service: headers[:service], external_uri: params[:external_uri])
     end
   end
 end
