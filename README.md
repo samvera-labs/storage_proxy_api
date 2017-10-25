@@ -1,15 +1,13 @@
-# StorageProxyClient
+# StorageProxyAPI
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/storage_proxy_client`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem provides a Ruby interface to the Camel-based [External Storage Proxy](https://github.com/samvera-labs/samvera-external_storage), which is a tool to provide a common interface between Hyrax applications and multiple 3rd party storage services.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'storage_proxy_client'
+gem 'storage_proxy_api'
 ```
 
 And then execute:
@@ -18,19 +16,33 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install storage_proxy_client
+    $ gem install storage_proxy_api
 
 ## Usage
 
-TODO: Write usage instructions here
+Instantiate a `StorageProxyAPI::Client` to make API calls to the storage proxy.
 
-## Development
+```ruby
+require 'storage_proxy_api/client'
+base_url = 'http://localhost:9091' # replace this value with wherever the storage proxy is listening for requests.
+client = StorageProxyAPI::Client.new(base_url: base_url)
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Send a request to get the status of a file and see if it is currently staged.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+# The :service option is used to tell the External Storage Proxy which algorithm to use when translating
+# an incoming request into the request that is forwarded on to the 3rd party storage service.
+# The :external_uri option is the URI by which files are identified in the 3rd party storage service.
+# TODO: Replace :service and :external_uri options with a real world example when we have one.
+# The possible values for :service option should come from the External Storage Proxy.
+response = client.status(service: "Example Storage Service", external_uri: "foo:bar")
+response.staged? # returns true or false
+```
 
-## Contributing
+Send a request to stage a file.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/Andrew Myers/storage_proxy_client.
-
+```ruby
+response = client.stage(service: "Example Storage Service", external_uri: "foo:bar")
+response.staged_location # returns a URI that can be used to download the file.
+```
