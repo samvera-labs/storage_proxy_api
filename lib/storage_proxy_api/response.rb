@@ -18,7 +18,7 @@ module StorageProxyAPI
 
     def staging?
       # FIXME There is no staging field yet in the api spec.
-      parsed_body['staging'] == '1'
+      body['staging'] == '1'
     end
 
     def staged_location
