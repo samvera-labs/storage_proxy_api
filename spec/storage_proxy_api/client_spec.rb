@@ -50,6 +50,17 @@ describe StorageProxyAPI::Client do
         subject.send_request(http_method: :post)
       end
     end
+
+    context 'when service is unreachable' do
+      let(:action) { 'astley' }
+      before do
+        stub_request(:get, "#{subject.base_url}/#{action}").to_raise(Faraday::ConnectionFailed)
+      end
+      it 'reports as 503' do
+        expect(StorageProxyAPI::Response).to receive(:new).with(status: 503, headers: {}, body: {})
+        subject.send_request(http_method: :get, action: action)
+      end
+    end
   end
 
 

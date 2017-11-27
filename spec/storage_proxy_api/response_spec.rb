@@ -3,8 +3,25 @@ require 'spec_helper'
 describe StorageProxyAPI::Response do
   let(:mock_external_uri) { 'http://some_service.org' }
   let(:mock_vendor_service) { 'fake vendor' }
+  let(:mock_response_status) { 200 }
 
-  subject { described_class.new(body: mock_response_body.to_json) }
+  subject { described_class.new(status: mock_response_status, body: mock_response_body.to_json) }
+
+  describe 'up?' do
+    let(:mock_response_body) { {} }
+    context 'when the response is status 200' do
+      it 'returns true' do
+        expect(subject).to be_up
+      end
+    end
+
+    context 'when the response is not status 200' do
+      let(:mock_response_status) { 503 }
+      it 'returns false' do
+        expect(subject).to_not be_up
+      end
+    end
+  end
 
   describe 'staged?' do
     context 'when the response reports that the file is staged' do
@@ -12,8 +29,10 @@ describe StorageProxyAPI::Response do
         {
           external_uri: mock_external_uri,
           service: mock_vendor_service,
-          staged: '1',
-          staged_location: 'yomomshouse://12345'
+          stage: {
+              result: 'somehost:80/12345',
+              status: 'staged'
+          }
         }
       end
 
@@ -27,7 +46,6 @@ describe StorageProxyAPI::Response do
         {
           external_uri: mock_external_uri,
           service: mock_vendor_service,
-          staged: '0'
         }
       end
 
@@ -43,7 +61,10 @@ describe StorageProxyAPI::Response do
         {
           external_uri: mock_external_uri,
           service: mock_vendor_service,
-          staging: '1'
+          stage: {
+              result: 'somehost:80/12345',
+              status: 'staging'
+          }
         }
       end
 
@@ -57,7 +78,6 @@ describe StorageProxyAPI::Response do
         {
           external_uri: mock_external_uri,
           service: mock_vendor_service,
-          staging: '0'
         }
       end
 
@@ -73,13 +93,15 @@ describe StorageProxyAPI::Response do
         {
           external_uri: mock_external_uri,
           service: mock_vendor_service,
-          staged: '1',
-          staged_location: 'yomomshouse://12345'
+          stage: {
+              result: 'somehost:80/12345',
+              status: 'staged'
+          }
         }
       end
 
       it 'returns the staged location of the file' do
-        expect(subject.staged_location).to eq 'yomomshouse://12345'
+        expect(subject.staged_location).to eq 'somehost:80/12345'
       end
     end
 
@@ -87,8 +109,7 @@ describe StorageProxyAPI::Response do
       let(:mock_response_body) do
         {
           external_uri: mock_external_uri,
-          service: mock_vendor_service,
-          staged: '0'
+          service: mock_vendor_service
         }
       end
 

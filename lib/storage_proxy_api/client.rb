@@ -28,6 +28,12 @@ module StorageProxyAPI
         body: faraday_response.body,
         headers: faraday_response.headers
       )
+    rescue Faraday::ConnectionFailed => e
+      StorageProxyAPI::Response.new(
+          status: 503,
+          body: {},
+          headers: {}
+      )
     end
 
     def status(service:, external_uri:, include_events: false)

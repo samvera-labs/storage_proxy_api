@@ -12,6 +12,10 @@ module StorageProxyAPI
       @body = JSON.parse body unless body.empty?
     end
 
+    def up?
+      status == 200
+    end
+
     def staged?
       body.dig('stage', 'status') == 'staged'
     end
