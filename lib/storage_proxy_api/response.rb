@@ -12,17 +12,21 @@ module StorageProxyAPI
       @body = JSON.parse body unless body.empty?
     end
 
+    def up?
+      status == 200
+    end
+
     def staged?
-      body['staged'] == '1'
+      body.dig('stage', 'status') == 'staged'
     end
 
     def staging?
       # FIXME There is no staging field yet in the api spec.
-      body['staging'] == '1'
+      body.dig('stage', 'status') == 'staging'
     end
 
     def staged_location
-      body['staged_location']
+      body.dig('stage', 'result')
     end
   end
 end

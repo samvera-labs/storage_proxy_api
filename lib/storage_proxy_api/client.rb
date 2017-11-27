@@ -28,17 +28,27 @@ module StorageProxyAPI
         body: faraday_response.body,
         headers: faraday_response.headers
       )
+    rescue Faraday::ConnectionFailed => e
+      StorageProxyAPI::Response.new(
+          status: 503,
+          body: {},
+          headers: {}
+      )
     end
 
     def status(service:, external_uri:, include_events: false)
-      send_request(http_method: :get, action: 'status', headers: { service: service, include_events: boolean_string(include_events) }, params: { external_uri: external_uri} )
+      send_request(http_method: :get, action: build_url(service, 'status', external_uri), headers: { include_events: boolean_string(include_events) } )
     end
 
     def stage(service:, external_uri:)
-      send_request(http_method: :post, action: 'stage', headers: { service: service }, params: { external_uri: external_uri } )
+      send_request(http_method: :post, action: build_url(service, 'stage', external_uri))
     end
 
     private
+
+      def build_url(service, action, identifier)
+        [service, action, identifier].join '/'
+      end
 
       def boolean_string(value)
         case value
